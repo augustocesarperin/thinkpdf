@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thinkpdf"
+version = "0.1.0"
+description = "PDF to Markdown converter"
+requires-python = ">=3.10"
+license = {text = "AGPL-3.0"}
+authors = [
+    {name = "Augusto Cesar Perin", email = "augustocesarperin@gmail.com"}
+]
+
+dependencies = [
+    "pymupdf>=1.23.0",
+]
+
+[tool.setuptools]
+packages = ["thinkpdf", "thinkpdf.core"]
