@@ -39,11 +39,9 @@ test_*.md
 .DS_Store
 Thumbs.db
 
-setup_git.sh
-setup_git.ps1
 output.md
 final_test.md
 teste_*.md
 test.html
 logo.png
-anymd/
+

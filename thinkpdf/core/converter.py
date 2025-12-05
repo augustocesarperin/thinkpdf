@@ -225,7 +225,7 @@ class PDFConverter:
         sizes = []
         all_bold = True
         total_chars = 0
-        
+
         for line in block.lines:
             for span in line.spans:
                 if span.size > 0:
@@ -242,7 +242,7 @@ class PDFConverter:
 
         if ratio >= self.options.heading_ratio:
             return True
-        
+
         if all_bold and total_chars < 100 and len(block.lines) <= 2:
             return True
 

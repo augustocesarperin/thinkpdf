@@ -426,7 +426,6 @@ def _block_to_lines(
             out.append("")
         return out
 
-
     para_text = _fix_hyphenation("\n".join(rendered_lines))
 
     lines: List[str] = []

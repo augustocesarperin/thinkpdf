@@ -61,7 +61,6 @@ from typing import List, Tuple
 from .models import PageText, Block, Line
 
 
-
 @dataclass
 class MathDetection:
     """

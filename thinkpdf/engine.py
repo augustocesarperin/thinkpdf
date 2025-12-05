@@ -15,6 +15,7 @@ try:
     from docling.document_converter import DocumentConverter
     from docling.datamodel.base_models import InputFormat
     from docling.datamodel.pipeline_options import PdfPipelineOptions
+
     HAS_DOCLING = True
 except ImportError:
     HAS_DOCLING = False
@@ -23,12 +24,14 @@ except ImportError:
 try:
     from .core.pipeline import pdf_to_markdown as pdfmd_convert
     from .core.models import Options as PdfmdOptions
+
     HAS_PDFMD = True
 except ImportError:
     HAS_PDFMD = False
 
 try:
     import fitz
+
     HAS_PYMUPDF = True
 except ImportError:
     HAS_PYMUPDF = False
@@ -45,11 +48,11 @@ def has_encoding_issues(text: str) -> bool:
     if not text:
         return False
 
-    replacement_count = text.count('\ufffd')
+    replacement_count = text.count("\ufffd")
     if replacement_count > len(text) * 0.01:  # More than 1% replacement chars
         return True
 
-    non_printable = sum(1 for c in text if not c.isprintable() and c not in '\n\r\t')
+    non_printable = sum(1 for c in text if not c.isprintable() and c not in "\n\r\t")
     if non_printable > len(text) * 0.05:  # More than 5% non-printable
         return True
 
@@ -141,7 +144,6 @@ def analyze_pdf_complexity(file_path: Path) -> dict:
 
     except Exception as e:
         return {"recommended_engine": "docling", "error": str(e)}
-
 
 
 class thinkpdfEngine:

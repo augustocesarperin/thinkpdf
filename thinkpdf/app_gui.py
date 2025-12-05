@@ -21,18 +21,21 @@ import tkinter as tk
 
 try:
     import windnd
+
     HAS_WINDND = True
 except ImportError:
     HAS_WINDND = False
 
 try:
     from tkinterdnd2 import TkinterDnD, DND_FILES
+
     HAS_TKDND = True
 except ImportError:
     HAS_TKDND = False
 
 try:
     import customtkinter as ctk
+
     HAS_CTK = True
 except ImportError:
     HAS_CTK = False
@@ -40,6 +43,7 @@ except ImportError:
 
 try:
     from PIL import Image
+
     HAS_PIL = True
 except ImportError:
     HAS_PIL = False
@@ -48,12 +52,13 @@ except ImportError:
 class CTkDnD(ctk.CTk if HAS_CTK else object):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
-    def drop_target_register(self, dndtype='DND_Files'):
+
+    def drop_target_register(self, dndtype="DND_Files"):
         pass
-    
+
     def dnd_bind(self, sequence, func, add=None):
         pass
+
 
 __version__ = "1.0.0"
 
@@ -232,7 +237,9 @@ class thinkpdfApp:
         folder = filedialog.askdirectory(title="Select output folder")
         if folder:
             self.output_folder = Path(folder)
-            self.output_label.configure(text=str(self.output_folder), text_color="white")
+            self.output_label.configure(
+                text=str(self.output_folder), text_color="white"
+            )
 
     def _build_file_list(self, parent):
         """Build the file list section."""
@@ -333,16 +340,16 @@ class thinkpdfApp:
         """Setup drag and drop for Windows."""
         if not HAS_TKDND:
             return
-        
+
         def on_drop(event):
             files = self.root.tk.splitlist(event.data)
             for f in files:
                 path = Path(f)
-                if path.suffix.lower() == '.pdf':
+                if path.suffix.lower() == ".pdf":
                     self._add_file(path)
-        
+
         self.root.drop_target_register(DND_FILES)
-        self.root.dnd_bind('<<Drop>>', on_drop)
+        self.root.dnd_bind("<<Drop>>", on_drop)
 
     def _browse_files(self, event=None):
         """Open file browser to select PDFs."""
@@ -469,9 +476,7 @@ class thinkpdfApp:
             self.is_converting = False
             self.root.after(
                 0,
-                lambda: self.convert_btn.configure(
-                    state="normal", text="Convert All"
-                ),
+                lambda: self.convert_btn.configure(state="normal", text="Convert All"),
             )
 
     def _update_progress(self, current: int, total: int, filename: str):

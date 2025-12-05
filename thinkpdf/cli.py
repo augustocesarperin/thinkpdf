@@ -15,8 +15,15 @@ from .logger import logger
 
 try:
     from rich.console import Console
-    from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+    from rich.progress import (
+        Progress,
+        SpinnerColumn,
+        TextColumn,
+        BarColumn,
+        TaskProgressColumn,
+    )
     from rich.panel import Panel
+
     HAS_RICH = True
 except ImportError:
     HAS_RICH = False
@@ -42,13 +49,33 @@ Examples:
         """,
     )
 
-    parser.add_argument("input", nargs="?", help="PDF file or folder to convert (or 'setup' command)")
-    parser.add_argument("-o", "--output", help="Output markdown file or folder", default=None)
-    parser.add_argument("--batch", action="store_true", help="Batch convert all PDFs in a folder")
-    parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers for batch (default: 1)")
-    parser.add_argument("--no-cache", action="store_true", help="Skip cache and force re-conversion")
-    parser.add_argument("--ocr", choices=["off", "auto", "force"], default="auto", help="OCR mode (default: auto)")
-    parser.add_argument("--export-images", action="store_true", help="Export images to _assets folder")
+    parser.add_argument(
+        "input", nargs="?", help="PDF file or folder to convert (or 'setup' command)"
+    )
+    parser.add_argument(
+        "-o", "--output", help="Output markdown file or folder", default=None
+    )
+    parser.add_argument(
+        "--batch", action="store_true", help="Batch convert all PDFs in a folder"
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Number of parallel workers for batch (default: 1)",
+    )
+    parser.add_argument(
+        "--no-cache", action="store_true", help="Skip cache and force re-conversion"
+    )
+    parser.add_argument(
+        "--ocr",
+        choices=["off", "auto", "force"],
+        default="auto",
+        help="OCR mode (default: auto)",
+    )
+    parser.add_argument(
+        "--export-images", action="store_true", help="Export images to _assets folder"
+    )
     parser.add_argument("--password", help="Password for encrypted PDFs", default=None)
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     parser.add_argument("--version", action="version", version="thinkpdf 1.0.2")
@@ -59,14 +86,11 @@ Examples:
 def setup_mcp() -> bool:
     """Show MCP configuration for Cursor and Antigravity."""
     import json
-    
+
     mcp_config = {
-        "thinkpdf": {
-            "command": "python",
-            "args": ["-m", "thinkpdf.mcp_server"]
-        }
+        "thinkpdf": {"command": "python", "args": ["-m", "thinkpdf.mcp_server"]}
     }
-    
+
     print("=" * 50)
     print("thinkpdf MCP Setup")
     print("=" * 50)
@@ -120,6 +144,7 @@ def convert_single_file(
             return True, "cached", len(cached.split())
 
     try:
+
         def progress(done: int, total: int) -> None:
             if progress_callback:
                 progress_callback(done, total)
@@ -169,7 +194,12 @@ def convert_with_progress(
                 progress.update(task, completed=pct)
 
             success, msg, word_count = convert_single_file(
-                input_path, output_path, options, use_cache, password, verbose,
+                input_path,
+                output_path,
+                options,
+                use_cache,
+                password,
+                verbose,
                 progress_callback=update_progress,
             )
 
@@ -177,16 +207,25 @@ def convert_with_progress(
 
         if success:
             if msg == "cached":
-                console.print(f"[green]OK[/green] {input_path.name} [dim](from cache)[/dim]")
+                console.print(
+                    f"[green]OK[/green] {input_path.name} [dim](from cache)[/dim]"
+                )
             else:
-                console.print(f"[green]OK[/green] {input_path.name} [dim]({word_count} words)[/dim]")
+                console.print(
+                    f"[green]OK[/green] {input_path.name} [dim]({word_count} words)[/dim]"
+                )
         else:
             console.print(f"[red]FAIL[/red] {input_path.name} [red]{msg}[/red]")
 
         return success
     else:
         success, msg, word_count = convert_single_file(
-            input_path, output_path, options, use_cache, password, verbose,
+            input_path,
+            output_path,
+            options,
+            use_cache,
+            password,
+            verbose,
         )
         if success:
             logger.info(f"Converted -> {input_path.name} ({word_count} words)")
@@ -220,14 +259,16 @@ def convert_batch_parallel(
     success_count = 0
 
     if HAS_RICH and console:
-        console.print(Panel(
-            f"[bold]Batch Conversion[/bold]\n"
-            f"Files: {len(pdf_files)} PDFs\n"
-            f"Workers: {workers}\n"
-            f"Source: {input_dir}",
-            title="thinkpdf",
-            expand=False,
-        ))
+        console.print(
+            Panel(
+                f"[bold]Batch Conversion[/bold]\n"
+                f"Files: {len(pdf_files)} PDFs\n"
+                f"Workers: {workers}\n"
+                f"Source: {input_dir}",
+                title="thinkpdf",
+                expand=False,
+            )
+        )
 
         with Progress(
             SpinnerColumn(),
@@ -256,8 +297,14 @@ def convert_batch_parallel(
 
                         if success:
                             success_count += 1
-                            status = "[dim](cached)[/dim]" if msg == "cached" else f"[dim]({wc} words)[/dim]"
-                            console.print(f"  [green]OK[/green] {pdf_file.name} {status}")
+                            status = (
+                                "[dim](cached)[/dim]"
+                                if msg == "cached"
+                                else f"[dim]({wc} words)[/dim]"
+                            )
+                            console.print(
+                                f"  [green]OK[/green] {pdf_file.name} {status}"
+                            )
                         else:
                             console.print(f"  [red]FAIL[/red] {pdf_file.name}")
             else:
@@ -267,12 +314,18 @@ def convert_batch_parallel(
 
                     if success:
                         success_count += 1
-                        status = "[dim](cached)[/dim]" if msg == "cached" else f"[dim]({wc} words)[/dim]"
+                        status = (
+                            "[dim](cached)[/dim]"
+                            if msg == "cached"
+                            else f"[dim]({wc} words)[/dim]"
+                        )
                         console.print(f"  [green]OK[/green] {pdf_file.name} {status}")
                     else:
                         console.print(f"  [red]FAIL[/red] {pdf_file.name}")
 
-        console.print(f"\n[bold green]Completed:[/bold green] {success_count}/{len(pdf_files)} files")
+        console.print(
+            f"\n[bold green]Completed:[/bold green] {success_count}/{len(pdf_files)} files"
+        )
     else:
         logger.info(f"Batch converting {len(pdf_files)} files from: {input_dir}")
 
@@ -296,7 +349,7 @@ def main(args: Optional[List[str]] = None) -> int:
 
     if parsed.input == "setup":
         return 0 if setup_mcp() else 1
-    
+
     if not parsed.input:
         parser.print_help()
         return 0
@@ -322,15 +375,24 @@ def main(args: Optional[List[str]] = None) -> int:
 
         output_dir = Path(parsed.output) if parsed.output else None
         success = convert_batch_parallel(
-            input_path, output_dir, options, use_cache,
-            parsed.password, parsed.verbose, workers,
+            input_path,
+            output_dir,
+            options,
+            use_cache,
+            parsed.password,
+            parsed.verbose,
+            workers,
         )
         return 0 if success > 0 else 1
     else:
         output_path = Path(parsed.output) if parsed.output else None
         success = convert_with_progress(
-            input_path, output_path, options, use_cache,
-            parsed.password, parsed.verbose,
+            input_path,
+            output_path,
+            options,
+            use_cache,
+            parsed.password,
+            parsed.verbose,
         )
         return 0 if success else 1
 

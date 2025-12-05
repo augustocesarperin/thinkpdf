@@ -415,9 +415,7 @@ def _which(cmd: str) -> Optional[str]:
     if path:
         return path
 
-    exts = [
-        ""
-    ]
+    exts = [""]
     if os.name == "nt":
         pathext = os.environ.get("PATHEXT", "")
         exts.extend(ext.strip() for ext in pathext.split(os.pathsep) if ext.strip())
