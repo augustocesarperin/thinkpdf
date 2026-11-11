@@ -122,6 +122,30 @@ class TestCache:
             assert stats["entries"] == 0
 
 
+class TestCacheIndexRecovery:
+    """Tests for corrupt cache index handling."""
+
+    def test_foreign_index_shape_resets_cache(self):
+        """An index entry from another schema must not crash startup."""
+        from thinkpdf.cache.cache_manager import CacheManager
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            (Path(tmpdir) / "cache_index.json").write_text(
+                '{"abc": {"bogus_field": 1}}', encoding="utf-8"
+            )
+            cache = CacheManager(cache_dir=Path(tmpdir))
+            assert cache.get_stats()["entries"] == 0
+
+    def test_non_utf8_index_resets_cache(self):
+        """A non-UTF-8 index file must not crash startup."""
+        from thinkpdf.cache.cache_manager import CacheManager
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            (Path(tmpdir) / "cache_index.json").write_bytes(b"\xff\xfe{\x00}")
+            cache = CacheManager(cache_dir=Path(tmpdir))
+            assert cache.get_stats()["entries"] == 0
+
+
 class TestLogger:
     """Tests for logging module."""
 
