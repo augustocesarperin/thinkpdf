@@ -201,7 +201,7 @@ class CacheManager:
                 self._index = {
                     key: CacheEntry.from_dict(value) for key, value in data.items()
                 }
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError, TypeError, UnicodeDecodeError):
                 self._index = {}
 
     def _save_index(self) -> None:
